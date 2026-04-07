@@ -1,0 +1,1376 @@
+    <!-- Transition Overlay for Mail to Home -->
+    <div id="mailTransitionOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:linear-gradient(120deg,#0fd9ff 0%,#a1f0ff 100%); z-index:99999; opacity:0; transition:opacity 0.7s cubic-bezier(.4,0,.2,1); pointer-events:none;"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everything I Love About You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(253, 230, 138, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(139, 92, 246, 0.8), 0 0 80px rgba(253, 230, 138, 0.6);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes float-slow {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+            66% {
+                transform: translateY(-10px) rotate(-2deg);
+            }
+        }
+
+        @keyframes glow-intense {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(139, 92, 246, 0.5), inset 0 0 30px rgba(139, 92, 246, 0.2);
+            }
+        }
+
+        @keyframes float-rise {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 60px;
+            background: linear-gradient(90deg, #0fd9ff 0%, #1de9b6 100%);
+            box-shadow: 0 2px 18px rgba(0, 212, 255, 0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #0a3d4d;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #0fd9ff;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 80px 60px;
+            animation: fadeInUp 0.8s ease-out forwards;
+            background: linear-gradient(120deg, #e0fcff 0%, #a1f0ff 100%);
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            font-weight: 800;
+            color: #0fd9ff;
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease-out forwards;
+            text-shadow: 0 2px 16px #0fd9ff33;
+        }
+
+        .hero-content h1 .paw {
+            color: #1de9b6;
+            position: relative;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: #0a3d4d;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.1s forwards;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #0fd9ff 0%, #1de9b6 100%);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.18), 0 0 15px rgba(0, 212, 255, 0.10);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.28), 0 0 30px rgba(0, 212, 255, 0.18);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .hero-image {
+            position: relative;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #0fd9ff 0%, #1de9b6 100%);
+            border-radius: 100% 80% 70% 90%;
+            opacity: 0.18;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .hero-image img {
+            position: relative;
+            z-index: 10;
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.10);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 80px 60px;
+            background: linear-gradient(120deg, #e0fcff 0%, #a1f0ff 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 800;
+            font-family: 'Quicksand', sans-serif;
+            color: #0fd9ff;
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease-out;
+            text-shadow: 0 2px 16px #0fd9ff33;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out forwards;
+            transition: all 0.3s ease;
+        }
+
+        .category-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #0fd9ff 0%, #1de9b6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 12px 35px rgba(0, 212, 255, 0.18), 0 0 25px rgba(0, 212, 255, 0.10);
+            animation: float-rise 3s ease-in-out infinite;
+        }
+
+        .category-card:hover .category-icon {
+            transform: translateY(-15px) scale(1.1) rotateZ(5deg);
+            box-shadow: 0 20px 50px rgba(253, 230, 138, 0.5), 0 0 40px rgba(253, 230, 138, 0.3);
+        }
+
+        .category-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a3d4d;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        /* Products Section */
+        .products {
+            padding: 80px 60px;
+            background: #e0fcff;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #F0F9FF 0%, #F0E7FF 100%);
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .product-description {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .shop-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.4s ease;
+        }
+
+        .shop-btn:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4), 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .shop-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            padding: 80px 60px;
+            background: #e0fcff;
+        }
+
+        .notes-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            background: linear-gradient(135deg, #e0fcff 0%, #a1f0ff 100%);
+            padding: 60px;
+            border-radius: 20px;
+            border: 2px solid #0fd9ff;
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.15);
+        }
+
+        .notes-content p {
+            font-size: 18px;
+            color: #0a3d4d;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        .page-footer {
+            background: linear-gradient(90deg, #0fd9ff 0%, #1de9b6 100%);
+            color: #fff;
+            padding: 50px 60px;
+            text-align: center;
+        }
+
+        .page-footer p {
+            margin-bottom: 10px;
+        }
+
+        /* Page Navigation */
+        .page-content {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .page-content.hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 40px 20px;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Enter Page */
+        .enter-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image: url('image/cat.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            animation: fadeInUp 0.8s ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .enter-page.hidden {
+            display: none;
+        }
+
+        .enter-content {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            background: white;
+            border: 2px dashed #8B5CF6;
+            border-radius: 20px;
+            padding: 50px 60px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .cat-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 15px;
+            margin: 0 auto 30px;
+            display: block;
+            object-fit: cover;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+
+        .enter-content h1 {
+            font-size: 48px;
+            font-weight: 800;
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 15px;
+            color: #8B5CF6;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            letter-spacing: 1px;
+        }
+
+        .enter-content p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #333333;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .enter-btn {
+            background: #1488d6;
+            color: white;
+            border: none;
+            padding: 14px 50px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 8px 20px rgba(20, 136, 214, 0.18);
+        }
+
+        .enter-btn:hover {
+            background: #1488d6;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(20, 136, 214, 0.28), 0 0 20px rgba(20, 136, 214, 0.12);
+        }
+
+        .main-content {
+            transition: opacity 0.3s ease;
+        }
+
+        .main-content.hidden {
+            display: none;
+        }
+
+        /* Letter Page */
+        .letter-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image: url('image/cat.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            animation: fadeInUp 0.8s ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 8888;
+            overflow: hidden;
+        }
+
+        .letter-page.hidden {
+            display: none;
+        }
+
+        .letter-container {
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .letter {
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFFBF0 100%);
+            border: 3px solid #8B5CF6;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 30px rgba(139, 92, 246, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fadeInUp 0.8s ease-out, glow-intense 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .letter::before {
+            content: '✉️';
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .letter h2 {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'Quicksand', sans-serif;
+            color: #8B5CF6;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .letter p {
+            font-size: 14px;
+            color: #333333;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .letter:hover {
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 40px 100px rgba(139, 92, 246, 0.5), 0 0 50px rgba(139, 92, 246, 0.4);
+        }
+
+        .mail-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            max-height: 80vh;
+            background: white;
+            border: 3px solid #8B5CF6;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.3);
+            z-index: 8889;
+            animation: mailFlyIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5) rotate(-20deg);
+            overflow-y: auto;
+            display: none;
+        }
+
+        .mail-content.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        }
+
+        @keyframes mailFlyIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotate(-20deg) translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg) translateY(0);
+            }
+        }
+
+        .mail-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #8B5CF6;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .mail-close:hover {
+            background: #7C3AED;
+            transform: rotate(90deg);
+        }
+
+        .mail-content h2 {
+            color: #8B5CF6;
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .mail-content p {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .mail-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 8888;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mail-backdrop.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Volume Control */
+        .volume-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            padding: 16px 28px;
+            border-radius: 50px;
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25), 0 0 60px rgba(139, 92, 246, 0.1);
+            animation: fadeInUp 0.8s ease-out;
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .volume-control:hover {
+            box-shadow: 0 16px 50px rgba(139, 92, 246, 0.35), 0 0 80px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .volume-icon {
+            font-size: 24px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.3));
+        }
+
+        .volume-slider {
+            width: 150px;
+            height: 6px;
+            border-radius: 10px;
+            background: linear-gradient(to right, #E5E7EB 0%, #E5E7EB 100%);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .volume-slider:hover {
+            height: 8px;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            cursor: pointer;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2), 0 6px 16px rgba(139, 92, 246, 0.5);
+            transition: all 0.2s ease;
+            border: none;
+            position: relative;
+            top: -7px;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            width: 24px;
+            height: 24px;
+            top: -9px;
+            box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.3), 0 8px 24px rgba(139, 92, 246, 0.6);
+        }
+
+        .volume-slider::-webkit-slider-thumb:active {
+            transform: scale(0.95);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2), 0 6px 16px rgba(139, 92, 246, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .volume-slider::-moz-range-thumb:hover {
+            width: 24px;
+            height: 24px;
+            box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.3), 0 8px 24px rgba(139, 92, 246, 0.6);
+        }
+
+        .volume-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, #8B5CF6 0%, #8B5CF6 var(--value), #E5E7EB var(--value), #E5E7EB 100%);
+            height: 6px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .volume-slider::-moz-range-track {
+            background: transparent;
+            border: none;
+            height: 6px;
+        }
+
+        .volume-slider::-moz-range-progress {
+            background: linear-gradient(to right, #8B5CF6 0%, #7C3AED 100%);
+            height: 6px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+        }
+        /* Gallery Grid for Memory Walk */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.18), 0 2px 8px rgba(0,212,255,0.10);
+            background: rgba(255,255,255,0.85);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+            cursor: pointer;
+            animation: fadeInUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            margin-bottom: 10px;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s;
+            box-shadow: 0 0 24px 0 rgba(0, 212, 255, 0.18), 0 0 60px 0 rgba(0, 212, 255, 0.10);
+            border-radius: 18px;
+        }
+        .gallery-item:hover {
+            transform: scale(1.06) translateY(-8px);
+            box-shadow: 0 24px 64px rgba(0, 212, 255, 0.28), 0 8px 32px rgba(0,212,255,0.18);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.10);
+            box-shadow: 0 0 48px 0 rgba(0, 212, 255, 0.28), 0 0 80px 0 rgba(0, 212, 255, 0.18);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(0deg, rgba(0,212,255,0.7) 0%, rgba(0,212,255,0.0) 100%);
+            color: #fff;
+            font-size: 1.1em;
+            font-family: 'Quicksand', sans-serif;
+            padding: 16px 18px 10px 18px;
+            border-radius: 0 0 18px 18px;
+            opacity: 0.92;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            pointer-events: none;
+        }
+
+        /* Immersive animated background for Memories */
+        .memories-bg-immersive {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(120deg, #0fd9ff 0%, #a1f0ff 100%);
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .memories-bg-immersive .parallax-bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.18;
+            background: radial-gradient(circle, #fff 0%, #0fd9ff 100%);
+            animation: float-slow 12s infinite linear;
+        }
+        .memories-bg-immersive .bubble1 { width: 180px; height: 180px; left: 10vw; top: 10vh; animation-delay: 0s; }
+        .memories-bg-immersive .bubble2 { width: 120px; height: 120px; left: 70vw; top: 20vh; animation-delay: 2s; }
+        .memories-bg-immersive .bubble3 { width: 90px; height: 90px; left: 40vw; top: 60vh; animation-delay: 4s; }
+        .memories-bg-immersive .bubble4 { width: 220px; height: 220px; left: 80vw; top: 70vh; animation-delay: 6s; }
+        .memories-bg-immersive .bubble5 { width: 140px; height: 140px; left: 20vw; top: 80vh; animation-delay: 8s; }
+
+        /* Lightbox Overlay */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(30, 27, 75, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .lightbox.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25), 0 2px 8px rgba(0,0,0,0.18);
+            background: #fff;
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 40px;
+            right: 60px;
+            font-size: 48px;
+            color: #fff;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 100000;
+            transition: color 0.2s;
+        }
+        .lightbox-close:hover {
+            color: #FDE68A;
+        }
+    </style>
+</head>
+<body>
+    <!-- Volume Control -->
+    <div class="volume-control">
+        <span class="volume-icon">🔊</span>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="60">
+    </div>
+
+    <!-- Enter Page -->
+    <div class="enter-page" id="enterPage">
+        <div class="enter-content">
+            <img src="https://cataas.com/cat/says/hi?filter=mono&color=purple" alt="Cute Cat" class="cat-avatar">
+            <h1>Hii Shyn</h1>
+            <p>Click the next button!! (づ｡◕‿‿◕｡)づ</p>
+            <button class="enter-btn" id="enterBtn">Next!! *(^o^)*</button>
+        </div>
+    </div>
+
+    <!-- Letter Page -->
+
+    <div class="letter-page" id="letterPage">
+        <div class="letter-container">
+            <div class="letter" id="letterElement">
+                <h2>You Have Mail!</h2>
+                <p>Click me to open 💌</p>
+            </div>
+            <!-- Next Button UNDER the mailbox, hidden by default -->
+            <button class="cta-button" id="mailNextBtn" style="display:none; margin:32px auto 0; width:220px;">Next</button>
+        </div>
+        <!-- Mail Content -->
+        <div class="mail-backdrop" id="mailBackdrop"></div>
+        <div class="mail-content" id="mailContent">
+            <button class="mail-close" id="mailClose">×</button>
+            <h2>💌 A Letter for You</h2>
+            <p>Dear Shyn!</p>
+            <p>I was just bored and decided to surprise you with this. I want to take a moment to tell you how special you are. You brighten my day with your laughter and make every moment feel enjoyable and special.</p>
+            <p>This little page is a collection of memories, moments, and things I want to cherish with you.</p>
+            <p>I realised that your always so patient with me when I bring up issues to you and you always do your best to understand me and where I'm coming from and I really appreciate you for that.🌟</p>
+            <p>With love and warmth,<br>Jy 💜</p>
+        </div>
+        <!-- Next Button BELOW the mail, always visible above backdrop, below modal -->
+        <button class="cta-button" id="mailNextBtn" style="display:none; position:fixed; left:50%; transform:translateX(-50%); top:calc(50% + 320px); z-index:8890; width:220px; margin-top:24px;">Next</button>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" preload="auto">
+        <source src="mp3/Christina Perri - A Thousand Years  Piano Cover with Strings (with Lyrics & PIANO SHEET).mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Navigation -->
+        <nav>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home'); return false;">Home</a></li>
+                <li><a onclick="showPage('memories'); return false;">Memories</a></li>
+                <li><a onclick="showPage('notes'); return false;">Reasons</a></li>
+            </ul>
+        </nav>
+
+        <!-- Home Page -->
+        <div id="homePage" class="page-content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Everything I <span class="paw">Love</span> About You</h1>
+                    <p>This page is dedicated to you, Shyn. A collection of all the reasons you mean so much to me, the moments we've shared, and the qualities that make you truly special. 💜</p>
+                    <button class="cta-button" onclick="showPage('memories')">Explore Our Moments ✨</button>
+                </div>
+                <div class="hero-image">
+                    <img src="image/shyn.jpg" alt="Adorable Cat">
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="categories">
+                <h2 class="section-title">Why You're Purr-fect</h2>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon">😸</div>
+                        <h3>Prettiest woman</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">😻</div>
+                        <h3>Best Laughter</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">😸</div>
+                        <h3>Patient Soul</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">😻</div>
+                        <h3>Genuine Care</h3>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <p>Made with ❤️ by Jy for Shyn 🐾</p>
+                <p>Thank you for being the most wonderful person in my life. 💜</p>
+            </footer>
+        </div>
+
+        <!-- Memories Page -->
+        <div id="memoriesPage" class="page-content hidden">
+            <section class="products" style="position:relative; overflow:hidden;">
+                <div class="memories-bg-immersive">
+                    <div class="parallax-bubble bubble1"></div>
+                    <div class="parallax-bubble bubble2"></div>
+                    <div class="parallax-bubble bubble3"></div>
+                    <div class="parallax-bubble bubble4"></div>
+                    <div class="parallax-bubble bubble5"></div>
+                </div>
+                <h2 class="section-title" style="color:#1488d6; text-shadow:0 2px 16px #0fd9ff33, 0 1px 0 #fff;">Memory Walk Gallery</h2>
+                <div class="gallery-grid">
+                    <!-- Memory Walk Images Start -->
+                    <div class="gallery-item"><img src="image/memories/134149637746049670_1452_817_1770521032384.jpg" alt="Memory 1"></div>
+                    <div class="gallery-item"><img src="image/memories/134152228844634900_1327_747_1770778087982.jpg" alt="Memory 2"></div>
+                    <div class="gallery-item"><img src="image/memories/20.png" alt="Memory 3"></div>
+                    <div class="gallery-item"><img src="image/memories/21.jpg" alt="Memory 4"></div>
+                    <div class="gallery-item"><img src="image/memories/image.png" alt="Memory 5"></div>
+                    <div class="gallery-item"><img src="image/memories/image11.png" alt="Memory 6"></div>
+                    <div class="gallery-item"><img src="image/memories/image12.png" alt="Memory 7"></div>
+                    <div class="gallery-item"><img src="image/memories/image13.png" alt="Memory 8"></div>
+                    <div class="gallery-item"><img src="image/memories/image14.png" alt="Memory 9"></div>
+                    <div class="gallery-item"><img src="image/memories/image15png.png" alt="Memory 10"></div>
+                    <div class="gallery-item"><img src="image/memories/image17.png" alt="Memory 11"></div>
+                    <div class="gallery-item"><img src="image/memories/image2.png" alt="Memory 12"></div>
+                    <div class="gallery-item"><img src="image/memories/image3.png" alt="Memory 13"></div>
+                    <div class="gallery-item"><img src="image/memories/image4.png" alt="Memory 14"></div>
+                    <div class="gallery-item"><img src="image/memories/image5.png" alt="Memory 15"></div>
+                    <div class="gallery-item"><img src="image/memories/image6.png" alt="Memory 16"></div>
+                    <div class="gallery-item"><img src="image/memories/image7.png" alt="Memory 17"></div>
+                    <div class="gallery-item"><img src="image/memories/image8.png" alt="Memory 18"></div>
+                    <div class="gallery-item"><img src="image/memories/image9.png" alt="Memory 19"></div>
+                    <!-- Memory Walk Images End -->
+                </div>
+            </section>
+            <footer class="page-footer">
+                <p>Made with ❤️ by Jy for Shyn 🐾</p>
+                <p>Thank you for being the most wonderful person in my life. 💜</p>
+            </footer>
+        </div>
+
+        <!-- Notes Page -->
+        <div id="notesPage" class="page-content hidden">
+            <section class="notes-section" style="min-height:70vh; background: linear-gradient(120deg, #f0faff 0%, #e0e7ff 100%); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <h2 class="section-title" style="font-size:2.5rem; color:#1488d6; text-shadow:0 4px 24px #14b8a655; animation: glow-intense 2.5s infinite alternate;">100 Reasons I Like You</h2>
+                <div class="notes-content" style="max-width:600px; width:100%; background:rgba(255,255,255,0.97); box-shadow:0 8px 40px #14b8a622; border:2px solid #1488d6; border-radius:24px; padding:40px 30px 40px 50px; margin:32px 0; overflow-y:auto; max-height:60vh;">
+                        <ol id="reasonsList" style="font-size:1.15rem; color:#4B5563; font-family:'Quicksand',sans-serif; line-height:1.8; counter-reset:reasons; padding-left:0; text-align:left;">
+                        <li> Your kindness</li>
+                        <li> Your laughter</li>
+                        <li> Your pretty</li>
+                        <li> Your racism</li>
+                        <li> Your voice</li>
+                        <li> Your caring</li>
+                        <li> Your considerate</li>
+                        <li> You do ur best to understand me</li>
+                        <li> Your mature</li>
+                        <li> Your emotionally mature</li>
+                        <li> You listen to me</li>
+                        <li> Your strength to push through life</li>
+                        <li> You always try your best</li>
+                        <li> Your eyes</li>
+                        <li> Your patience</li>
+                        <li> Your style</li>
+                        <li> Our bond and connection</li>
+                        <li> How you try to support me</li>
+                        <li> Your self respect</li>
+                        <li> Your mindset</li>
+                        <li> Your morals</li>
+                        <li> Your unique, special and different</li>
+                        <li> You make me laugh and smile</li>
+                        <li> You dont judge me</li>
+                        <li> You dont find me weird or cringe</li>
+                        <li> Your presence</li>
+                        <li> You let me be myself</li>
+                        <li> Your empathy</li>
+                        <li> I want to protect you</li>
+                        <li> I want you to feel safe</li>
+                        <li> I dont want you to go through what you went through again</li>
+                        <li> You try your best to initiate things with me</li>
+                        <li> I have a soft spot for you</li>
+                        <li> You matter to me</li>
+                        <li> You value and cherish me</li>
+                        <li> I worry about you when your sad or hurt</li>
+                        <li> I like to listen to you talk</li>
+                        <li> I want you to be happy</li>
+                        <li> Your cute</li>
+                        <li> Your weird sense of humour</li>
+                        <li> You accept me for who I am</li>
+                        <li> Your hair</li>
+                        <li> Your loyalty</li>
+                        <li> Your frequently on my mind</li>
+                        <li> You listen to my bs</li>
+                        <li> Time flies when im with you</li>
+                        <li> Your soul</li>
+                        <li> Your smart</li>
+                        <li> Your adorable</li>
+                        <li> Your sweet</li>
+                        <li> Your music taste</li>
+                        <li> Your honesty</li>
+                        <li> You make things more fun</li>
+                        <li> You respect boundaries</li>
+                        <li> You take accountability</li>
+                        <li> Your amazing</li>
+                        <li> Your piano skills</li>
+                        <li> Your energy</li>
+                        <li> Your personality</li>
+                        <li> Your love for cats</li>
+                        <li> Your love for chagee</li>
+                        <li> You check up on me when im quiet</li>
+                        <li> You try ur best to reassure me</li>
+                        <li> You make me feel better when im down</li>
+                        <li> Your carelessness</li>
+                        <li> Your insecurity</li>
+                        <li> Your past</li>
+                        <li> You never give up</li>
+                        <li> You value my opinion</li>
+                        <li> Our convos</li>
+                        <li> Your vulnerability</li>
+                        <li> Your name</li>
+                        <li> Your good at cooking</li>
+                        <li> You make my life more fun</li>
+                        <li> The way we dont seperate or give up from conflicts</li>
+                        <li> You try to be there for me</li>
+                        <li> Your sacarsm</li>
+                        <li> Your creativity</li>
+                        <li> Your arts and crafts</li>
+                        <li> Your bs</li>
+                        <li> Your playfulness</li>
+                        <li> Your heart</li>
+                        <li> Your awkuardness</li>
+                        <li> Your independence</li>
+                        <li> Your nature</li>
+                        <li> Your growth</li>
+                        <li> You always try to be better</li>
+                        <li> Your laziness</li>
+                        <li> Your stubborness</li>
+                        <li> Your trust</li>
+                        <li> You forgive</li>
+                        <li> You dont mock me</li>
+                        <li> Your sincerity</li>
+                        <li> Your pure</li>
+                        <li> We can talk and spend time for hours</li>
+                        <li> Your inclusivity</li>
+                        <li> Your reactions</li>
+                        <li> Your voice messages</li>
+                        <li> Your calls</li>
+                        <li> Because your you</li>
+                    </ol>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <p>Made with ❤️ by Jy for Shyn 🐾</p>
+                <p>Thank you for being the most wonderful person in my life. 💜</p>
+            </footer>
+        </div>
+
+        <!-- Lightbox Overlay for Gallery -->
+        <div class="lightbox" id="lightboxOverlay">
+            <button class="lightbox-close" id="lightboxClose">&times;</button>
+            <img class="lightbox-img" id="lightboxImg" src="" alt="Memory">
+        </div>
+    </div>
+
+    <script>
+        const enterBtn = document.getElementById('enterBtn');
+        const enterPage = document.getElementById('enterPage');
+        const letterPage = document.getElementById('letterPage');
+        const letterElement = document.getElementById('letterElement');
+        const mailContent = document.getElementById('mailContent');
+        const mailBackdrop = document.getElementById('mailBackdrop');
+        const mailClose = document.getElementById('mailClose');
+        const mainContent = document.getElementById('mainContent');
+        const bgMusic = document.getElementById('bgMusic');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        // Page Navigation Function
+        function showPage(pageName) {
+            // Hide all pages
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('memoriesPage').classList.add('hidden');
+            document.getElementById('notesPage').classList.add('hidden');
+
+            // Hide transition overlay if present (always force hide)
+            var mailTransitionOverlay = document.getElementById('mailTransitionOverlay');
+            if (mailTransitionOverlay) {
+                mailTransitionOverlay.style.opacity = '0';
+                mailTransitionOverlay.style.display = 'none';
+            }
+
+            // Show selected page
+            if (pageName === 'home') {
+                document.getElementById('homePage').classList.remove('hidden');
+            } else if (pageName === 'memories') {
+                document.getElementById('memoriesPage').classList.remove('hidden');
+                // Extra safety: force-hide overlay again in case of async transition
+                if (mailTransitionOverlay) {
+                    mailTransitionOverlay.style.opacity = '0';
+                    mailTransitionOverlay.style.display = 'none';
+                }
+            } else if (pageName === 'notes') {
+                document.getElementById('notesPage').classList.remove('hidden');
+            }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Volume slider control
+        volumeSlider.addEventListener('input', function() {
+            bgMusic.volume = this.value / 100;
+            // Update the filled track effect
+            this.style.setProperty('--value', this.value + '%');
+        });
+
+        // Set initial value
+        volumeSlider.style.setProperty('--value', '60%');
+
+        // Enter button click - show letter page and play music
+        enterBtn.addEventListener('click', function() {
+            enterPage.classList.add('hidden');
+            letterPage.classList.remove('hidden');
+            
+            // Play the music
+            bgMusic.volume = 0.6;
+            const playPromise = bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log('Music is playing');
+                }).catch(error => {
+                    console.error('Error playing music:', error);
+                });
+            }
+        });
+
+        // Letter click - show mail content with animation
+        letterElement.addEventListener('click', function() {
+            mailContent.classList.add('show');
+            mailBackdrop.classList.add('show');
+            // Hide the Next button while mail is open
+            document.getElementById('mailNextBtn').style.display = 'none';
+        });
+
+        // Mail close button - close mail and show letter page again
+        mailClose.addEventListener('click', function() {
+            mailContent.classList.remove('show');
+            mailBackdrop.classList.remove('show');
+            // Show the Next button under the mailbox
+            document.getElementById('mailNextBtn').style.display = 'block';
+            // Show the letter page again
+            letterPage.classList.remove('hidden');
+        });
+
+        // Next button UNDER the mailbox - go to homepage/main content with transition
+        const mailNextBtn = document.getElementById('mailNextBtn');
+        const mailTransitionOverlay = document.getElementById('mailTransitionOverlay');
+        mailNextBtn.addEventListener('click', function() {
+            // Start transition overlay
+            mailTransitionOverlay.style.display = 'block';
+            setTimeout(function() {
+                mailTransitionOverlay.style.opacity = '1';
+            }, 10);
+            // After animation, switch pages
+            setTimeout(function() {
+                mailContent.classList.remove('show');
+                mailBackdrop.classList.remove('show');
+                mailNextBtn.style.display = 'none';
+                letterPage.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                showPage('home');
+                // Fade out overlay
+                mailTransitionOverlay.style.opacity = '0';
+                setTimeout(function() {
+                    mailTransitionOverlay.style.display = 'none';
+                }, 700);
+            }, 700);
+        });
+
+        // Backdrop click - close mail
+        mailBackdrop.addEventListener('click', function() {
+            mailContent.classList.remove('show');
+            mailBackdrop.classList.remove('show');
+            // Show the Next button under the mailbox
+            mailNextBtn.style.display = 'block';
+        });
+
+        // Log if audio element is loaded
+        bgMusic.addEventListener('loadedmetadata', function() {
+            console.log('Audio file loaded successfully');
+        });
+
+        bgMusic.addEventListener('error', function() {
+            console.error('Error loading audio file');
+        });
+        // Lightbox functionality for gallery
+        const galleryItems = document.querySelectorAll('.gallery-item img');
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        // Delegate event after DOMContentLoaded to ensure gallery exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryImgs = document.querySelectorAll('.gallery-item img');
+            galleryImgs.forEach(img => {
+                img.addEventListener('click', function() {
+                    lightboxImg.src = this.src;
+                    lightboxOverlay.classList.add('show');
+                });
+            });
+        });
+        // Close lightbox on close button or overlay click
+        lightboxClose.addEventListener('click', function() {
+            lightboxOverlay.classList.remove('show');
+            lightboxImg.src = '';
+        });
+        lightboxOverlay.addEventListener('click', function(e) {
+            if (e.target === lightboxOverlay) {
+                lightboxOverlay.classList.remove('show');
+                lightboxImg.src = '';
+            }
+        });
+    </script>
+</body>
+</html>
